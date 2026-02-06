@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text, Line } from "@react-three/drei";
 import * as THREE from "three";
@@ -7,7 +7,7 @@ import { stokesToCartesian } from "../math/stokes";
 
 /** Colors for input + 4 plate states */
 const STATE_COLORS = ["#4fc3f7", "#81c784", "#ffb74d", "#e57373", "#ba68c8"];
-const STATE_LABELS = ["Input", "After P1", "After P2", "After P3", "After P4"];
+const STATE_LABELS = ["Input", "After P1", "After P2", "After P3", "Output"];
 
 interface PoincareSphereProps {
   simulation: SimulationResult;
@@ -72,25 +72,26 @@ function AxisLabel({ position, text, color }: { position: [number, number, numbe
 }
 
 function ReferenceCircles() {
+  // Equator: S3=0 plane (all linear states), which is y=0 in our mapping (xz plane)
   const equator = useMemo(() => circlePoints("xz"), []);
-  const meridianXZ = useMemo(() => circlePoints("xy"), []);
-  const meridianYZ = useMemo(() => circlePoints("yz"), []);
+  // Meridian through H/V and R/L poles: S2=0 plane (z=0), xy plane
+  const meridianS2zero = useMemo(() => circlePoints("xy"), []);
+  // Meridian through +45/-45 and R/L poles: S1=0 plane (x=0), yz plane
+  const meridianS1zero = useMemo(() => circlePoints("yz"), []);
 
   return (
     <>
       <Line points={equator} color="#555555" lineWidth={0.8} transparent opacity={0.3} />
-      <Line points={meridianXZ} color="#555555" lineWidth={0.5} transparent opacity={0.2} />
-      <Line points={meridianYZ} color="#555555" lineWidth={0.5} transparent opacity={0.2} />
+      <Line points={meridianS2zero} color="#555555" lineWidth={0.5} transparent opacity={0.2} />
+      <Line points={meridianS1zero} color="#555555" lineWidth={0.5} transparent opacity={0.2} />
     </>
   );
 }
 
 function StatePoint({ position, color, label }: { position: [number, number, number]; color: string; label: string }) {
-  const ref = useRef<THREE.Mesh>(null);
-
   return (
     <group position={position}>
-      <mesh ref={ref}>
+      <mesh>
         <sphereGeometry args={[0.05, 16, 16]} />
         <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.5} />
       </mesh>

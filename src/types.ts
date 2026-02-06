@@ -5,7 +5,7 @@ export type StokesVector = [number, number, number, number];
 export interface PlateDef {
   /** Orientation angle in radians */
   theta: number;
-  /** Retardance in radians (0 to pi/2) */
+  /** Retardance in radians (0 to pi) */
   delta: number;
   /** Display label */
   label: string;

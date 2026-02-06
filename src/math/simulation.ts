@@ -24,7 +24,7 @@ export function simulatePlateChain(
   for (const plate of plates) {
     const next = applyWavePlate(current, plate.delta, plate.theta);
     states.push(next);
-    arcs.push(computeArcPoints(current, next, plate.delta, plate.theta));
+    arcs.push(computeArcPoints(current, plate.delta, plate.theta));
     current = next;
   }
 
@@ -37,7 +37,6 @@ export function simulatePlateChain(
  */
 export function computeArcPoints(
   from: StokesVector,
-  _to: StokesVector,
   delta: number,
   theta: number,
   numPoints: number = 48

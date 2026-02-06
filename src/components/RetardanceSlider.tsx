@@ -32,7 +32,7 @@ export default function RetardanceSlider({
       <Slider
         value={value}
         min={0}
-        max={Math.PI / 2}
+        max={Math.PI}
         step={0.01}
         onChange={(_, v) => onChange(index, v as number)}
         sx={{
