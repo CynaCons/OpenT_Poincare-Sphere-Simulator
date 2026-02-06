@@ -1,5 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
-import { Box, ThemeProvider, CssBaseline } from "@mui/material";
+import { Box, ThemeProvider, CssBaseline, ToggleButtonGroup, ToggleButton } from "@mui/material";
+import TuneIcon from "@mui/icons-material/Tune";
+import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import theme from "./theme";
 import TitleBar from "./components/TitleBar";
 import StatusBar from "./components/StatusBar";
@@ -10,7 +12,10 @@ import { createPlates, simulatePlateChain } from "./math/simulation";
 import type { StokesVector } from "./types";
 import "./App.css";
 
+type AppMode = "manual" | "jacobian";
+
 export default function App() {
+  const [mode, setMode] = useState<AppMode>("manual");
   const [inputPreset, setInputPreset] = useState("Linear H (0°)");
   const [customStokes, setCustomStokes] = useState<StokesVector>([1, 1, 0, 0]);
   const [retardances, setRetardances] = useState<[number, number, number, number]>([0, 0, 0, 0]);
@@ -48,6 +53,19 @@ export default function App() {
     setCustomStokes(stokes);
   }, []);
 
+  const handleRetardancesUpdate = useCallback((r: [number, number, number, number]) => {
+    setRetardances(r);
+  }, []);
+
+  const handleModeChange = useCallback((_: React.MouseEvent<HTMLElement>, newMode: AppMode | null) => {
+    if (newMode !== null) {
+      setMode(newMode);
+      if (newMode === "manual") {
+        setRetardances([0, 0, 0, 0]);
+      }
+    }
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -58,17 +76,59 @@ export default function App() {
           {/* 3D Viewport */}
           <Box sx={{ flex: 1, position: "relative" }}>
             <PoincareSphere simulation={simulation} />
+            {/* Mode toggle overlay */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 12,
+                left: 12,
+                zIndex: 10,
+              }}
+            >
+              <ToggleButtonGroup
+                value={mode}
+                exclusive
+                onChange={handleModeChange}
+                size="small"
+                sx={{
+                  bgcolor: "rgba(30,30,30,0.9)",
+                  border: "1px solid #444",
+                  "& .MuiToggleButton-root": {
+                    color: "#999",
+                    fontSize: 11,
+                    py: 0.3,
+                    px: 1.5,
+                    "&.Mui-selected": {
+                      color: "#fff",
+                      bgcolor: "rgba(55,148,255,0.2)",
+                    },
+                  },
+                }}
+              >
+                <ToggleButton value="manual">
+                  <TuneIcon sx={{ fontSize: 14, mr: 0.5 }} />
+                  Manual
+                </ToggleButton>
+                <ToggleButton value="jacobian">
+                  <AutoFixHighIcon sx={{ fontSize: 14, mr: 0.5 }} />
+                  Jacobian
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
           </Box>
 
           {/* Control Panel */}
           <ControlPanel
+            mode={mode}
             inputPreset={inputPreset}
+            inputStokes={inputStokes}
             customStokes={customStokes}
             retardances={retardances}
             simulation={simulation}
             onPresetChange={handlePresetChange}
             onCustomStokesChange={handleCustomStokesChange}
             onRetardanceChange={handleRetardanceChange}
+            onRetardancesUpdate={handleRetardancesUpdate}
           />
         </Box>
 
