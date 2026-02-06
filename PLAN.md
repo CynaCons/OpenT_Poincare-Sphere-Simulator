@@ -10,6 +10,14 @@
 - [x] **Step 6: State Management + Wiring** - App.tsx with reactive state management via useMemo
 - [x] **Step 7: Polish** - JetBrains Mono font, icons, clean build
 
+## Physics Review Fixes (commit 07bb3b7)
+
+- [x] Fixed S2/S3 axis mapping: stokesToCartesian now returns [S1, S3, S2] for correct Three.js Y-up mapping
+- [x] Fixed Mueller matrix sign convention to match standard textbook (Goldstein/Hecht)
+- [x] Extended retardance range from 90° to 180° (pi) for full half-wave plate capability
+- [x] Added comprehensive PHYSICS.md with expert summary and pedagogical guide
+- [x] Fixed label consistency, removed dead code
+
 ## Build Status
 
 - `npm install` - Clean (0 vulnerabilities)

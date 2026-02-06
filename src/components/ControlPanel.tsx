@@ -2,6 +2,7 @@ import { Box, Divider, Typography } from "@mui/material";
 import InputStateSelector from "./InputStateSelector";
 import RetardanceSlider from "./RetardanceSlider";
 import StokesDisplay from "./StokesDisplay";
+import PolarizationEllipse from "./PolarizationEllipse";
 import type { StokesVector, SimulationResult } from "../types";
 
 const PLATE_COLORS = ["#81c784", "#ffb74d", "#e57373", "#ba68c8"];
@@ -74,6 +75,31 @@ export default function ControlPanel({
       <Divider />
 
       <StokesDisplay states={simulation.states} />
+
+      <Divider />
+
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+        <Typography
+          variant="caption"
+          sx={{ color: "text.secondary", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}
+        >
+          Polarization Ellipse
+        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "center", gap: 1.5 }}>
+          <PolarizationEllipse
+            stokes={simulation.states[0]}
+            label="Input"
+            color="#4fc3f7"
+            size={130}
+          />
+          <PolarizationEllipse
+            stokes={simulation.states[simulation.states.length - 1]}
+            label="Output"
+            color="#ba68c8"
+            size={130}
+          />
+        </Box>
+      </Box>
     </Box>
   );
 }
